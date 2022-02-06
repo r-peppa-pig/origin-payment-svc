@@ -22,33 +22,32 @@ public class PaymentAppConfig  implements WebMvcConfigurer {
 	private PaymentInterceptor paymentInterceptor;
 
 	@Bean
-    public MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("classpath:ValidationMessages");
-        messageSource.setDefaultEncoding("UTF-8");
-        return messageSource;
-    }
+	public MessageSource messageSource() {
+		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+		messageSource.setBasename("classpath:ValidationMessages");
+		messageSource.setDefaultEncoding("UTF-8");
+		return messageSource;
+	}
 
 	@Bean
 	public LocalValidatorFactoryBean validator() {
-		System.out.println("Loading validator factory bean");
-	     LocalValidatorFactoryBean validatorFactoryBean = new LocalValidatorFactoryBean();
-	     validatorFactoryBean.setValidationMessageSource(messageSource());
-	     return validatorFactoryBean;
+		LocalValidatorFactoryBean validatorFactoryBean = new LocalValidatorFactoryBean();
+		validatorFactoryBean.setValidationMessageSource(messageSource());
+		return validatorFactoryBean;
 	}
-	
+
 	@Bean(name = "paymentMapper")
 	public PaymentMapper paymentMapper() {
 		return new PaymentMapper();
 	}
-	
+
 	@Bean(name = "dateTimeFormatter") 
 	public DateTimeFormatter dateTimeFormatter() {
 		return DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
 	}
-	
+
 	@Override
-    public void addInterceptors(InterceptorRegistry registry){
-        registry.addInterceptor(paymentInterceptor).addPathPatterns("/**");
-    }
+	public void addInterceptors(InterceptorRegistry registry){
+		registry.addInterceptor(paymentInterceptor).addPathPatterns("/**");
+	}
 }

@@ -1,14 +1,18 @@
 package au.com.origin.payment.service;
 
+import static au.com.origin.payment.constant.PaymentConstant.ONE_HUNDRED;
+import static au.com.origin.payment.constant.PaymentConstant.PAYMENT;
+import static au.com.origin.payment.constant.PaymentConstant.HYPHEN;
+import static au.com.origin.payment.constant.PaymentConstant.PERIOD;
+import static au.com.origin.payment.constant.PaymentConstant.CSV;
+
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import au.com.origin.payment.error.ErrorCode;
@@ -16,8 +20,6 @@ import au.com.origin.payment.error.PaymentException;
 import au.com.origin.payment.mapper.PaymentMapper;
 import au.com.origin.payment.model.Payment;
 import au.com.origin.payment.service.ext.io.FileIOService;
-
-import static au.com.origin.payment.constant.PaymentConstant.ONE_HUNDRED;
 
 @Service
 public class PaymentService {
@@ -44,18 +46,14 @@ public class PaymentService {
 		String now = dateTimeFormatter.format(java.time.LocalDateTime.now());
 		BigDecimal gstAmount = payment.getAmount().multiply(gstRate).divide(ONE_HUNDRED); 
 		BigDecimal amountExcludingGst = payment.getAmount().subtract(gstAmount);
-		
-		String fileName = fileLocationBase + "payment-"+ now + "-"+ UUID.randomUUID().toString() + ".csv";
-		System.out.println("gstAmount ===> " + gstAmount);
-		System.out.println("amountExcludingGst ===> " + amountExcludingGst);
+		String fileName = 		new StringBuilder()
+				.append(fileLocationBase).append(PAYMENT).append(HYPHEN).append(now).append(HYPHEN).append(UUID.randomUUID().toString())
+				.append(PERIOD).append(CSV).toString();
 		try {
-			fileIoService.savePayment(fileName, paymentMapper.map(payment, now, gstAmount, amountExcludingGst));
+			var fileIOPayment = paymentMapper.map(payment, now, gstAmount, amountExcludingGst);
+			fileIoService.savePayment(fileName, fileIOPayment);
 		} catch (IOException ioException) {
-			throw PaymentException.builder().code(errorCode.getFileIoWriteErrorCode())
-			.message(errorCode.getFileIoWriteErrorMsg()).timestamp(LocalDateTime.now().toString())
-			.cause(ioException).build();
+			throw new PaymentException(errorCode.getFileIoWriteErrorCode(), errorCode.getFileIoWriteErrorMsg(), ioException);
 		}
-
 	}
-
 }

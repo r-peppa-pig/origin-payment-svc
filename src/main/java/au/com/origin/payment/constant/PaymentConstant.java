@@ -26,5 +26,16 @@ public class PaymentConstant {
 	public static final BigDecimal ONE_HUNDRED = new BigDecimal(100);
 	
 	public static final String DATE_TIME_FORMAT = "yyyyMMddHHmmss";
+	
+	public static final String CODE = "code";
+	public static final String MESSAGE = "message";
+	public static final String TIMESTAMP = "timestamp";
+
+	public static final String PAYMENT = "payment";
+	public static final String HYPHEN = "-";
+	public static final String PERIOD = ".";
+	public static final String CSV = "csv";
+
+	public static final String SUCCESS = "success";
 
 }

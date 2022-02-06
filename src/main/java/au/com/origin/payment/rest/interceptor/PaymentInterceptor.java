@@ -1,7 +1,7 @@
 package au.com.origin.payment.rest.interceptor;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,17 +19,17 @@ import lombok.Setter;
 @Setter
 public class PaymentInterceptor implements HandlerInterceptor {
 
-	@Value("${payment.start.time}")
-	private int paymentStartTime;
+	@Value("#{ T(java.time.LocalTime).parse('${payment.start.time}')}")
+	private LocalTime paymentStartTime;
+	
+	@Value("#{ T(java.time.LocalTime).parse('${payment.end.time}')}")
+	private LocalTime paymentEndTime;
+	
+	@Value("#{ T(java.time.LocalTime).parse('${friday.payment.start.time}')}")
+	private LocalTime fridayPaymentStartTime;
 
-	@Value("${payment.end.time}")
-	private int paymentEndTime;
-
-	@Value("${friday.payment.start.time}")
-	private int fridayPaymentStartTime;
-
-	@Value("${friday.payment.end.time}")
-	private int fridayPaymentEndTime;
+	@Value("#{ T(java.time.LocalTime).parse('${friday.payment.end.time}')}")
+	private LocalTime fridayPaymentEndTime;
 
 	@Value("${origin.payment.access.error.code}")
 	private String accessErrorCode;
@@ -40,46 +40,38 @@ public class PaymentInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		//Calendar cal = Calendar.getInstance();
-		//int hour = cal.get(cal.HOUR_OF_DAY);
 		LocalDateTime now = LocalDateTime.now();
-		DayOfWeek day = now.getDayOfWeek();
-		int hour = now.getHour();
+		LocalTime nowTime = now.toLocalTime();
 
-		System.out.println("Hour now is ===> " + hour);
-		System.out.println("MINIMAL: INTERCEPTOR PREHANDLE CALLED");
-
-		switch(day) {
+		switch(now.getDayOfWeek()) {
 		case MONDAY:
 		case TUESDAY:
 		case WEDNESDAY:
 		case THURSDAY:
-			if (hour >= paymentStartTime && hour <= paymentEndTime) {
+			if(nowTime.isAfter(paymentStartTime) && nowTime.isBefore(paymentEndTime)) {
 				return true;
-			} 
+			}
 			break;
 		case FRIDAY:
-			if (hour >= fridayPaymentStartTime && hour <= fridayPaymentEndTime) {
+			if(nowTime.isAfter(fridayPaymentStartTime) && nowTime.isBefore(fridayPaymentEndTime)) {
 				return true;
-			} 
+			}
 			break;
+		case SATURDAY:
+		case SUNDAY:
 		default:
 			break;				
 		}
-		throw PaymentAccessException.builder()
-		.code(accessErrorCode)
-		.message(accessErrorMsg).build();
+		throw new PaymentAccessException(accessErrorCode, accessErrorMsg);
 	}
 
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			@Nullable ModelAndView modelAndView) throws Exception {
-		System.out.println("MINIMAL: INTERCEPTOR POSTHANDLE CALLED");
 	}
 
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
 			@Nullable Exception ex) throws Exception {
-		System.out.println("MINIMAL: INTERCEPTOR AFTERCOMPLETION CALLED");
 	}
 }

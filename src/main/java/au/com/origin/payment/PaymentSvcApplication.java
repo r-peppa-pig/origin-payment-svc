@@ -8,10 +8,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @SpringBootApplication
 @EnableAutoConfiguration
 @EnableWebMvc
-public class OriginPaymentSvcApplication {
+public class PaymentSvcApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(OriginPaymentSvcApplication.class, args);
+		SpringApplication.run(PaymentSvcApplication.class, args);
 	}
 
 }

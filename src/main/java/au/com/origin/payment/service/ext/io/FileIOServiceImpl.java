@@ -9,7 +9,6 @@ import static au.com.origin.payment.constant.PaymentConstant.REFERENCE_NUMBER;
 import static au.com.origin.payment.constant.PaymentConstant.TOTAL_AMOUNT_INCLUDING_GST;
 import static org.apache.commons.csv.CSVFormat.DEFAULT;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -27,14 +26,12 @@ public class FileIOServiceImpl implements FileIOService {
 
 	@Override
 	public void savePayment(final String fileName, final FileIOPayment payment) throws IOException {
-		System.out.println("Saving file to disk ===> " + fileName);
-		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(fileName));
-				CSVPrinter csvPrinter = new CSVPrinter(writer, DEFAULT.withHeader(HEADERS));) {
+		try (CSVPrinter csvPrinter = new CSVPrinter(Files.newBufferedWriter(Paths.get(fileName)), DEFAULT.withHeader(HEADERS));) {
 			csvPrinter.printRecord(payment.getPaymentDateTime(), payment.getReferenceNumber(), payment.getBsb(),
-					payment.getAccountNumber(), payment.getTotalAmountIncludingGst(), payment.getGstAmount());
-
+					payment.getAccountNumber(), payment.getTotalAmountIncludingGst(), payment.getGstAmount(),
+					payment.getAmountExcludingGst());
 			csvPrinter.flush();
-		} 
+		}
 	}
 
 }

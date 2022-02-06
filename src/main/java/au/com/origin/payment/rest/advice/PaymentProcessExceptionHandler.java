@@ -1,5 +1,8 @@
 package au.com.origin.payment.rest.advice;
 
+import static au.com.origin.payment.constant.PaymentConstant.CODE;
+import static au.com.origin.payment.constant.PaymentConstant.MESSAGE;
+import static au.com.origin.payment.constant.PaymentConstant.TIMESTAMP;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -36,7 +39,7 @@ public class PaymentProcessExceptionHandler {
 		exception.printStackTrace();
 		return new ResponseEntity<>(map(exception.getCode(), exception.getMessage()), FORBIDDEN);
 	}
-
+	
 	@ExceptionHandler(PaymentException.class)
 	public ResponseEntity<Object> handleAllExceptionMethod(PaymentException exception, WebRequest requset) {
 		exception.printStackTrace();
@@ -45,15 +48,14 @@ public class PaymentProcessExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Object> handleAllExceptionMethod(Exception exception, WebRequest requset) {
-		exception.printStackTrace();
-		return new ResponseEntity<>(map(errorCode.getGenericErrorCode(), exception.getMessage()), INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(map(errorCode.getGenericErrorCode(), exception.getMessage()), INTERNAL_SERVER_ERROR);
 	}
-	
+
 	private Map<String, String> map(String code, String msg) {
 		Map<String, String> map = new HashMap<>();
-		map.put("code", code);
-		map.put("message", msg);
-		map.put("timestamp", LocalDateTime.now().toString());
+		map.put(CODE, code);
+		map.put(MESSAGE, msg);
+		map.put(TIMESTAMP, LocalDateTime.now().toString());
 		return map;
 	}
 }
