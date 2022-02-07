@@ -7,7 +7,6 @@ import java.time.LocalTime;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
@@ -17,13 +16,24 @@ import org.springframework.web.servlet.ModelAndView;
 import au.com.origin.payment.error.PaymentAccessException;
 import lombok.Setter;
 
+/**
+ * Provides cross cutting functionality for handling incoming requests.
+ * @author peppapig
+ *
+ */
 @Component
 @Setter
 public class PaymentInterceptor implements HandlerInterceptor {
 	
-	@Autowired
     private Clock clock;
 
+    public PaymentInterceptor() {
+    	clock = Clock.systemDefaultZone();
+    }
+    
+    public PaymentInterceptor(Clock clock) {
+    	this.clock = clock;
+    }
 	@Value("#{ T(java.time.LocalTime).parse('${payment.start.time}')}")
 	private LocalTime paymentStartTime;
 	
@@ -42,6 +52,9 @@ public class PaymentInterceptor implements HandlerInterceptor {
 	@Value("${origin.payment.access.error.msg}")
 	private String accessErrorMsg;
 
+	/**
+	 * Determines if the request is allowed based on configured time. 
+	 */
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {

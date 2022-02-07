@@ -20,6 +20,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import static au.com.origin.payment.constant.PaymentConstant.*;
 
+/**
+ * Payment request rest model.
+ * @author peppapig
+ *
+ */
 @Data
 @Builder
 @NoArgsConstructor

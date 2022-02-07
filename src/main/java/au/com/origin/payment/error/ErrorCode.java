@@ -7,6 +7,11 @@ import org.springframework.context.annotation.PropertySource;
 
 import lombok.Data;
 
+/**
+ * Contains error codes used by application.
+ * @author peppapig
+ *
+ */
 @ConfigurationProperties
 @Configuration
 @PropertySource("classpath:error.properties")

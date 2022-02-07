@@ -9,6 +9,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Model representing service layer Payment object.
+ * @author peppapig
+ *
+ */
 @Data
 @Builder
 @NoArgsConstructor

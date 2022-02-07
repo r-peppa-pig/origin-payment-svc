@@ -4,6 +4,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Base Exception for the application.
+ * @author peppapig
+ *
+ */
 @Data
 @Builder
 @NoArgsConstructor

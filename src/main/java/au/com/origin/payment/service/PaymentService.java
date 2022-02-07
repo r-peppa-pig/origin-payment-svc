@@ -21,6 +21,11 @@ import au.com.origin.payment.mapper.PaymentMapper;
 import au.com.origin.payment.model.Payment;
 import au.com.origin.payment.service.ext.io.FileIOService;
 
+/**
+ * Saves data to file.
+ * @author peppapig
+ *
+ */
 @Service
 public class PaymentService {
 

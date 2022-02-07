@@ -2,6 +2,11 @@ package au.com.origin.payment.error;
 
 import lombok.Data;
 
+/**
+ * Represents AccessException.  
+ * @author peppapig
+ *
+ */
 @Data
 public class PaymentAccessException extends PaymentBaseException {
 

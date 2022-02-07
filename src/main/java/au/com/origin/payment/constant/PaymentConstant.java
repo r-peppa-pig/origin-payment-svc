@@ -2,6 +2,11 @@ package au.com.origin.payment.constant;
 
 import java.math.BigDecimal;
 
+/**
+ * Contains constants used by the application.
+ * @author peppapig
+ *
+ */
 public class PaymentConstant {
 	public static final int REFERENCE_NUMBER_SIZE = 5;
 	public static final int BSB_MIN_VALUE = 100000;

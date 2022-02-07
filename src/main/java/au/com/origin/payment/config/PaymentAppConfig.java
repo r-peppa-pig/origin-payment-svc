@@ -16,6 +16,11 @@ import au.com.origin.payment.mapper.PaymentMapper;
 import au.com.origin.payment.rest.interceptor.PaymentInterceptor;
 import static au.com.origin.payment.constant.PaymentConstant.DATE_TIME_FORMAT;
 
+/**
+ * Configuration for the application. 
+ * @author peppapig
+ *
+ */
 @Configuration
 public class PaymentAppConfig  implements WebMvcConfigurer {
 

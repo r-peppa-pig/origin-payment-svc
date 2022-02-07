@@ -8,8 +8,11 @@ import org.springframework.stereotype.Component;
 import au.com.origin.payment.model.Payment;
 import au.com.origin.payment.service.ext.io.model.FileIOPayment;
 
-
-@Component
+/**
+ * Converts object from one type to another
+ * @author peppapig
+ *
+ */
 public class PaymentMapper {
 	public FileIOPayment map(final Payment payment, final String paymentDateTime,
 			final BigDecimal gstAmount, 

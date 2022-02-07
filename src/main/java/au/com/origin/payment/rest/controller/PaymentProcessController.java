@@ -16,19 +16,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import au.com.origin.payment.model.Payment;
 import au.com.origin.payment.rest.model.PaymentRequest;
 import au.com.origin.payment.service.PaymentService;
 
+/**
+ * Provides restful interface for the application.
+ * @author peppapig
+ *
+ */
 @RestController
 public class PaymentProcessController {
 
 	@Autowired
 	private PaymentService service;
 
+	/**
+	 * Saves payment information.
+	 * @param paymentRequest
+	 * @return
+	 */
 	@RequestMapping(value = "/payment", method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+	@ResponseBody
 	public ResponseEntity<Object> create(@RequestBody @Valid @NotNull PaymentRequest paymentRequest) {
 		ofNullable(paymentRequest)
 		.map(req -> Payment.builder()
