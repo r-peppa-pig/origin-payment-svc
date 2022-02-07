@@ -3,6 +3,7 @@ package au.com.origin.payment.rest.advice;
 import static au.com.origin.payment.constant.PaymentConstant.CODE;
 import static au.com.origin.payment.constant.PaymentConstant.MESSAGE;
 import static au.com.origin.payment.constant.PaymentConstant.TIMESTAMP;
+import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,25 +32,26 @@ public class PaymentProcessExceptionHandler {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception, WebRequest requset) {
-		exception.printStackTrace();
-		return new ResponseEntity<>(map(errorCode.getBadRequestCode(), exception.getFieldError().getDefaultMessage()), BAD_REQUEST);
+		return new ResponseEntity<>(map(errorCode.getBadRequestCode(),
+				ofNullable(exception)
+				.map(MethodArgumentNotValidException::getFieldError)
+				.map(FieldError::getDefaultMessage)
+				.orElse(errorCode.getBadRequestMsg())), BAD_REQUEST);
 	}
 
 	@ExceptionHandler(PaymentAccessException.class)
 	public ResponseEntity<Object> handlePaymentAccessException(PaymentAccessException exception, WebRequest requset) {
-		exception.printStackTrace();
 		return new ResponseEntity<>(map(exception.getCode(), exception.getMessage()), FORBIDDEN);
 	}
-	
+
 	@ExceptionHandler(PaymentException.class)
-	public ResponseEntity<Object> handleAllExceptionMethod(PaymentException exception, WebRequest requset) {
-		exception.printStackTrace();
+	public ResponseEntity<Object> handlePaymentException(PaymentException exception, WebRequest requset) {
 		return new ResponseEntity<>(map(exception.getCode(), exception.getMessage()), INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<Object> handleAllExceptionMethod(Exception exception, WebRequest requset) {
-			return new ResponseEntity<>(map(errorCode.getGenericErrorCode(), exception.getMessage()), INTERNAL_SERVER_ERROR);
+	public ResponseEntity<Object> handleException(Exception exception, WebRequest requset) {
+		return new ResponseEntity<>(map(errorCode.getGenericErrorCode(), exception.getMessage()), INTERNAL_SERVER_ERROR);
 	}
 
 	private Map<String, String> map(String code, String msg) {
