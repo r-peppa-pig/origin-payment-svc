@@ -3,6 +3,7 @@ package au.com.origin.payment.rest.controller;
 import static au.com.origin.payment.constant.PaymentConstant.MESSAGE;
 import static au.com.origin.payment.constant.PaymentConstant.SUCCESS;
 import static java.util.Optional.ofNullable;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -29,7 +30,6 @@ public class PaymentProcessController {
 
 	@RequestMapping(value = "/payment", method = POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> create(@RequestBody @Valid @NotNull PaymentRequest paymentRequest) {
-		System.out.println("PaymentRequest ===> " + paymentRequest);
 		ofNullable(paymentRequest)
 		.map(req -> Payment.builder()
 				.referenceNumber(req.getReferenceNumber())
@@ -38,6 +38,6 @@ public class PaymentProcessController {
 				.amount(req.getAmount())
 				.build())
 		.ifPresent(service::savePayment);
-		return ResponseEntity.ok().body(Map.of(MESSAGE, SUCCESS));
+		return ResponseEntity.status(CREATED).body(Map.of(MESSAGE, SUCCESS));
 	}
 }

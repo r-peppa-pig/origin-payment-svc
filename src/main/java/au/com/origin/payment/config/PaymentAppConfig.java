@@ -1,5 +1,6 @@
 package au.com.origin.payment.config;
 
+import java.time.Clock;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,11 @@ public class PaymentAppConfig  implements WebMvcConfigurer {
 		return DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
 	}
 
+	@Bean
+	public Clock clock() {
+	    return Clock.systemDefaultZone();
+	}
+	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry){
 		registry.addInterceptor(paymentInterceptor).addPathPatterns("/**");

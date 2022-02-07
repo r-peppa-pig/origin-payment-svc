@@ -1,11 +1,13 @@
 package au.com.origin.payment.rest.interceptor;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,9 @@ import lombok.Setter;
 @Component
 @Setter
 public class PaymentInterceptor implements HandlerInterceptor {
+	
+	@Autowired
+    private Clock clock;
 
 	@Value("#{ T(java.time.LocalTime).parse('${payment.start.time}')}")
 	private LocalTime paymentStartTime;
@@ -40,7 +45,7 @@ public class PaymentInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime now = LocalDateTime.now(clock);
 		LocalTime nowTime = now.toLocalTime();
 
 		switch(now.getDayOfWeek()) {
